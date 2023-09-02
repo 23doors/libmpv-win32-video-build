@@ -124,7 +124,7 @@ jobs:
       - name: Checkout toolchain
         uses: actions/checkout@v3
         with:
-          repository: 23doors/libmpv-win32-video-cmake
+          repository: 23doors/libmpv-win32-cmake
           path: mpv-winbuild-cmake
       - name: Get Params
         run: |
