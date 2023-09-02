@@ -1,7 +1,7 @@
 name: MPV
 run-name: ${{ inputs.run_name }}
 
-on: 
+on:
   # schedule:
   #   - cron:  '0 12 * * *'
   workflow_dispatch:
@@ -67,7 +67,7 @@ jobs:
               ref: `master`
             })
             core.exportVariable('sha', String(commit.data.sha))
-            
+
             let matrix = {};
             let build_target = "${{ inputs.build_target }}"
             switch ( build_target ) {
@@ -124,7 +124,7 @@ jobs:
       - name: Checkout toolchain
         uses: actions/checkout@v3
         with:
-          repository: media-kit/libmpv-win32-video-cmake
+          repository: 23doors/libmpv-win32-video-cmake
           path: mpv-winbuild-cmake
       - name: Get Params
         run: |
@@ -246,7 +246,7 @@ jobs:
                 core.exportVariable( `${type}_path`, file );
               }
             }
-            
+
             // let { stdout: ffmpeg_hash } = await exec.getExecOutput("git -C mpv-winbuild-cmake/src_packages/ffmpeg rev-parse --short HEAD");
             // ffmpeg_hash = ffmpeg_hash.trim();
             // const ffmpeg_name = `ffmpeg-${arch}-git-${ffmpeg_hash}`;
@@ -271,7 +271,7 @@ jobs:
         with:
           name: ${{ env.mpv_name }}
           path: ${{ env.mpv_path }}
-          
+
       # - name: upload ffmpeg
       #   uses: actions/upload-artifact@v3
       #   if: ${{ env.ffmpeg_name }}
@@ -307,15 +307,15 @@ jobs:
             const path = require('path');
             const { readdirSync,existsSync } = require('fs');
             const myExec = async (command, args = null) => await exec.getExecOutput(command,args,{silent: true}).then(result => result.stdout.trim()).catch(err => '');
-            
+
             const toolchainDir = path.resolve("mpv-winbuild-cmake");
             const workdir = path.resolve(toolchainDir,"src_packages");
             const isGitSync = dirname => existsSync(path.join(workdir, dirname, '.git'));
-            
+
             const getGithubUrl = (hash,remote) => remote.replace(/\.git$/,"") + `/commit/${hash}`;
             const getGitlabUrl = (hash,remote) => remote.replace(/\.git$/,"") + `/-/commit/${hash}`;
             const getBitbucketUrl = (hash,remote) => remote.replace(/\.git$/,"") + `/commits/${hash}`;
-            const getGoogleSourceUrl = (hash,remote) => remote + `/+/${hash}`;            
+            const getGoogleSourceUrl = (hash,remote) => remote + `/+/${hash}`;
             const gethGitVideolanUrl = (hash,remote) => remote.replace(/\/git\//,"/?p=") + `;a=commit;h=${hash}`;
             const getCgitUrl = (hash,remote) => remote + `/commit/?id=${hash}`;
             function getCommitUrl(hash,remote) {
@@ -345,7 +345,7 @@ jobs:
                 }
                 return url;
             }
-            
+
             const dirs = readdirSync(workdir, { withFileTypes: true }).filter(dirent => dirent.isDirectory() && isGitSync(dirent.name) ).map(dirent => path.join(workdir, dirent.name));
             let packages_table = [[{data: 'Package', header: true}, {data: 'Local commit', header: true}, {data: 'Status', header: true}, {data: 'Remote commit', header: true}]];
             for (let dir of dirs) {
@@ -361,7 +361,7 @@ jobs:
             let toolchain_hash = await myExec(`git -C ${toolchainDir} rev-parse HEAD`);
             let toolchain_remote = await myExec(`git -C ${toolchainDir} config --get remote.origin.url`);
             let toolchain_url = getCommitUrl(toolchain_hash, toolchain_remote);
-            
+
             await core.summary
             .addHeading('Basic Info')
             .addRaw(`toolchain: <a href="${toolchain_url}">${toolchain_hash.slice(0,7)}</a>`,true)
@@ -382,7 +382,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: artifacts
-    
+
       - name: "Check artifacts"
         uses: actions/github-script@v6
         with:
