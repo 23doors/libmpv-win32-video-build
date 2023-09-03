@@ -126,6 +126,7 @@ jobs:
         with:
           repository: 23doors/libmpv-win32-cmake
           path: mpv-winbuild-cmake
+          ref: main-decoders
       - name: Get Params
         run: |
           echo "sha=${{ fromJson(needs.params.outputs.params).sha }}" >> $GITHUB_ENV
